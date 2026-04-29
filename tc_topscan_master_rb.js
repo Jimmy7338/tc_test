@@ -823,62 +823,90 @@ function handleSpecialOneDOutput(data) {
     return true;
 }
 function handleSingleSpecialOneD(data) {
-    const specialCode = data.specialOneDCodes[0];
-    if (data.previousOutput.includes(specialCode)) {
-        logDebug(`Special 1D barcode ${specialCode} already in history records, skipping`);
-        emitPostScan(data.metadata, CODE_PLACEHOLDER, CODE_PLACEHOLDER, CODE_PLACEHOLDER, data.disposalMark);
-        logDebug("Special 1D barcode in history records, output ????");
-        return true;
-    }
-    const firstPostal = firstOrPlaceholder(data.postalCodes);
-    emitPostScan(data.metadata, specialCode, CODE_PLACEHOLDER, firstPostal, DISPOSAL_SPECIAL_1D);
-    logDebug("Only found special 1D barcode, other fields use ???? to represent: " + specialCode + ", disposal mark=3");
-    storeHistoryAndLog([specialCode]);
-    return true;
+    return handleSingleIncompleteMainCode(data, {
+        typeLabel: "Special 1D barcode",
+        value: data.specialOneDCodes[0],
+        outputOneZ: function(v) { return v; },
+        outputQr: function() { return CODE_PLACEHOLDER; },
+        disposalMarkWhenOutput: function() { return DISPOSAL_SPECIAL_1D; },
+        successLog: function(v) {
+            return "Only found special 1D barcode, other fields use ???? to represent: " + v + ", disposal mark=3";
+        }
+    });
 }
 function handleSingleOneZ(data) {
-    const oneZ = data.oneZCodes[0];
-    if (data.previousOutput.includes(oneZ)) {
-        logDebug(`1Z barcode ${oneZ} already in history records, skipping`);
-        emitPostScan(data.metadata, CODE_PLACEHOLDER, CODE_PLACEHOLDER, CODE_PLACEHOLDER, data.disposalMark);
-        logDebug("1Z barcode in history records, output ????");
-        return true;
-    }
-    const firstPostal = firstOrPlaceholder(data.postalCodes);
-    emitPostScan(data.metadata, oneZ, CODE_PLACEHOLDER, firstPostal, data.disposalMark);
-    logDebug("Only found 1Z barcode, Maxicode uses ???? to represent: " + oneZ);
-    storeHistoryAndLog([oneZ]);
-    return true;
+    return handleSingleIncompleteMainCode(data, {
+        typeLabel: "1Z barcode",
+        value: data.oneZCodes[0],
+        outputOneZ: function(v) { return v; },
+        outputQr: function() { return CODE_PLACEHOLDER; },
+        disposalMarkWhenOutput: function() { return data.disposalMark; },
+        successLog: function(v) {
+            return "Only found 1Z barcode, Maxicode uses ???? to represent: " + v;
+        }
+    });
 }
 function handleSingleMaxicode(data) {
-    const qr = data.qrCodes[0];
-    if (data.previousOutput.includes(qr)) {
-        logDebug(`Maxicode ${qr} already in history records, skipping`);
+    return handleSingleIncompleteMainCode(data, {
+        typeLabel: "Maxicode",
+        value: data.qrCodes[0],
+        outputOneZ: function() { return CODE_PLACEHOLDER; },
+        outputQr: function(v) { return v; },
+        disposalMarkWhenOutput: function(v) {
+            const extractedSpecialOneD = extractSpecialOneDFromMaxicode(v);
+            if (!extractedSpecialOneD) {
+                return data.disposalMark;
+            }
+            if (data.previousOutput.includes(extractedSpecialOneD)) {
+                logDebug(`Extracted special 1D barcode ${extractedSpecialOneD} from Maxicode is already in history records, skipping`);
+                return null;
+            }
+            logDebug(`Maxicode contains special 1D barcode ${extractedSpecialOneD} in field 5, changing disposal mark from ${data.disposalMark} to 3`);
+            return DISPOSAL_SPECIAL_1D;
+        },
+        skipReason: function(v) {
+            if (hasMaxicodeHistoryContainment(v, data.previousOutput)) {
+                return "contained";
+            }
+            return null;
+        },
+        successLog: function(v, finalDisposalMark) {
+            return "Only found Maxicode, 1Z uses ???? to represent: " + v + ", disposal mark: " + finalDisposalMark;
+        }
+    });
+}
+function handleSingleIncompleteMainCode(data, options) {
+    const value = options.value;
+    if (data.previousOutput.includes(value)) {
+        logDebug(`${options.typeLabel} ${value} already in history records, skipping`);
         emitPostScan(data.metadata, CODE_PLACEHOLDER, CODE_PLACEHOLDER, CODE_PLACEHOLDER, data.disposalMark);
-        logDebug("Maxicode in history records, output ????");
+        logDebug(`${options.typeLabel} in history records, output ????`);
         return true;
     }
-    if (hasMaxicodeHistoryContainment(qr, data.previousOutput)) {
-        emitPostScan(data.metadata, CODE_PLACEHOLDER, CODE_PLACEHOLDER, CODE_PLACEHOLDER, data.disposalMark);
-        logDebug("Maxicode in history records, output ????");
-        return true;
-    }
-    const extractedSpecialOneD = extractSpecialOneDFromMaxicode(qr);
-    let finalDisposalMark = data.disposalMark;
-    if (extractedSpecialOneD) {
-        if (data.previousOutput.includes(extractedSpecialOneD)) {
-            logDebug(`Extracted special 1D barcode ${extractedSpecialOneD} from Maxicode is already in history records, skipping`);
+    if (typeof options.skipReason === "function") {
+        const reason = options.skipReason(value);
+        if (reason) {
             emitPostScan(data.metadata, CODE_PLACEHOLDER, CODE_PLACEHOLDER, CODE_PLACEHOLDER, data.disposalMark);
-            logDebug("Extracted special 1D barcode in history records, output ????");
+            logDebug(`${options.typeLabel} in history records, output ????`);
             return true;
         }
-        finalDisposalMark = DISPOSAL_SPECIAL_1D;
-        logDebug(`Maxicode contains special 1D barcode ${extractedSpecialOneD} in field 5, changing disposal mark from ${data.disposalMark} to 3`);
+    }
+    const finalDisposalMark = options.disposalMarkWhenOutput(value);
+    if (finalDisposalMark === null) {
+        emitPostScan(data.metadata, CODE_PLACEHOLDER, CODE_PLACEHOLDER, CODE_PLACEHOLDER, data.disposalMark);
+        logDebug("Extracted special 1D barcode in history records, output ????");
+        return true;
     }
     const firstPostal = firstOrPlaceholder(data.postalCodes);
-    emitPostScan(data.metadata, CODE_PLACEHOLDER, qr, firstPostal, finalDisposalMark);
-    logDebug("Only found Maxicode, 1Z uses ???? to represent: " + qr + ", disposal mark: " + finalDisposalMark);
-    storeHistoryAndLog([qr]);
+    emitPostScan(
+        data.metadata,
+        options.outputOneZ(value),
+        options.outputQr(value),
+        firstPostal,
+        finalDisposalMark
+    );
+    logDebug(options.successLog(value, finalDisposalMark));
+    storeHistoryAndLog([value]);
     return true;
 }
 function handleIncompleteOutput(data) {
@@ -1198,15 +1226,21 @@ function checkBoxAndLineIntersection() {
         }
     });
     logDebug(`Parsed ${rectCount} rectangles and ${lineCount} line segments in total`);
+    const rectsWithEdges = validRects.map(function(rect) {
+        return {
+            rect: rect,
+            edges: getRectEdges(rect)
+        };
+    });
     let intersectLineCount = 0;
     validLines.forEach(line => {
         const lineP1 = line[0];
         const lineP2 = line[1];
         let isIntersect = false;
-        for (let i = 0; i < validRects.length; i++) {
+        for (let i = 0; i < rectsWithEdges.length; i++) {
             if (isIntersect) break;
-            const rect = validRects[i];
-            const rectEdges = getRectEdges(rect);
+            const rect = rectsWithEdges[i].rect;
+            const rectEdges = rectsWithEdges[i].edges;
             for (let edge of rectEdges) {
                 if (isSegmentsIntersect(lineP1, lineP2, edge.p1, edge.p2)) {
                     isIntersect = true;
@@ -1254,52 +1288,66 @@ function judgeRoiMode() {
     }
     return Object.values(sideRoiMode).some(v => v === 1) ? 'Tall' : 'Short';
 }
+function buildRectangleEdgesWithMetrics(vertices) {
+    var rawEdges = [
+        { name: "E0(V0->V1)", p1: vertices[0], p2: vertices[1] },
+        { name: "E1(V1->V2)", p1: vertices[1], p2: vertices[2] },
+        { name: "E2(V2->V3)", p1: vertices[2], p2: vertices[3] },
+        { name: "E3(V3->V0)", p1: vertices[3], p2: vertices[0] }
+    ];
+    return rawEdges.map(function(edge) {
+        var dx = edge.p2.x - edge.p1.x;
+        var dy = edge.p2.y - edge.p1.y;
+        return {
+            name: edge.name,
+            p1: edge.p1,
+            p2: edge.p2,
+            dx: dx,
+            dy: dy,
+            midX: (edge.p1.x + edge.p2.x) / 2,
+            midY: (edge.p1.y + edge.p2.y) / 2,
+            length: Math.sqrt(dx * dx + dy * dy)
+        };
+    });
+}
+function getTargetParcelWithEdges() {
+    var boxData = JSON.parse(VNLib.GetBoxCoordinates());
+    var direction = VNLib.GetBoxDirection();
+    if (!Array.isArray(boxData) || boxData.length === 0) {
+        return undefined;
+    }
+    var sortedBoxes = boxData.slice().sort(function(a, b) {
+        return getBoxSortKey(a, direction) - getBoxSortKey(b, direction);
+    });
+    var targetBox = sortedBoxes[0];
+    return {
+        boxData: boxData,
+        direction: direction,
+        targetBox: targetBox,
+        targetBoxCenter: getBoxCenter(targetBox),
+        edges: buildRectangleEdgesWithMetrics(targetBox)
+    };
+}
 function getParcelAngle() {
     try {
-        var boxData = JSON.parse(VNLib.GetBoxCoordinates());
-        var direction = VNLib.GetBoxDirection();
+        var parcelData = getTargetParcelWithEdges();
         logDebug("===== Parcel Skew Angle Calculation Started (Origin: Top-Left) =====" + endStr);
-        logDebug("Current Conveyor Movement Direction: " + direction + " (0:Left→Right, 1:Right→Left, 2:Top→Bottom, 3:Bottom→Top)" + endStr);
-        logDebug("Detected parcel quantity in view: " + boxData.length + endStr);
+        logDebug("Current Conveyor Movement Direction: " + (parcelData ? parcelData.direction : undefined) + " (0:Left→Right, 1:Right→Left, 2:Top→Bottom, 3:Bottom→Top)" + endStr);
+        logDebug("Detected parcel quantity in view: " + (parcelData ? parcelData.boxData.length : 0) + endStr);
         logDebug("Coordinate Rule: X→Right(+), Y→Down(+) (Industrial Vision Standard)" + endStr);
-        if (!Array.isArray(boxData) || boxData.length === 0) {
+        if (!parcelData) {
             logDebug("Error: No valid parcel coordinate data detected" + endStr);
             return undefined;
         }
-        var sortedBoxes = boxData.slice().sort(function(a, b) {
-            var keyA = getBoxSortKey(a, direction);
-            var keyB = getBoxSortKey(b, direction);
-            return keyA - keyB;
-        });
-        var targetBox = sortedBoxes[0];
-        var targetBoxCenter = getBoxCenter(targetBox);
+        var direction = parcelData.direction;
+        var targetBox = parcelData.targetBox;
+        var targetBoxCenter = parcelData.targetBoxCenter;
         logDebug("Selected calculation target: Last parcel in movement path, center point X=" + targetBoxCenter.x.toFixed(2) + ", Y=" + targetBoxCenter.y.toFixed(2) + endStr);
         logDebug("4 vertex coordinates of target parcel: " + endStr);
         for (var j = 0; j < targetBox.length; j++) {
             logDebug("Vertex " + j + ": X=" + targetBox[j].x + ", Y=" + targetBox[j].y + endStr);
         }
-        function buildRectangleEdges(vertices) {
-            return [
-                { name: "E0(V0->V1)", p1: vertices[0], p2: vertices[1] },
-                { name: "E1(V1->V2)", p1: vertices[1], p2: vertices[2] },
-                { name: "E2(V2->V3)", p1: vertices[2], p2: vertices[3] },
-                { name: "E3(V3->V0)", p1: vertices[3], p2: vertices[0] }
-            ];
-        }
-        function pickTargetEdge(vertices, dir) {
-            const edges = buildRectangleEdges(vertices).map(function(edge) {
-                const dx = edge.p2.x - edge.p1.x;
-                const dy = edge.p2.y - edge.p1.y;
-                return {
-                    name: edge.name,
-                    p1: edge.p1,
-                    p2: edge.p2,
-                    dx: dx,
-                    dy: dy,
-                    midX: (edge.p1.x + edge.p2.x) / 2,
-                    midY: (edge.p1.y + edge.p2.y) / 2
-                };
-            });
+        function pickTargetEdge(edges, dir) {
             let candidates = [];
             if (dir === 2 || dir === 3) {
                 const minAbsDy = Math.min.apply(null, edges.map(function(e) { return Math.abs(e.dy); }));
@@ -1338,7 +1386,7 @@ function getParcelAngle() {
             const angle = (radian * 180) / Math.PI;
             return Math.round(angle * 100) / 100;
         }
-        const targetEdge = pickTargetEdge(targetBox, direction);
+        const targetEdge = pickTargetEdge(parcelData.edges, direction);
         const parcelSkewAngle = calcSkewAngle(targetEdge.p1, targetEdge.p2, direction);
         const finalResult = parcelSkewAngle + "°";
         logDebug("\n===== Final Parcel Skew Angle Result (Valid & Precise) =====" + endStr);
@@ -1354,43 +1402,39 @@ function getParcelAngle() {
 }
 function getParcelEdgeLength() {
     try {
-        var boxData = JSON.parse(VNLib.GetBoxCoordinates());
-        var direction = VNLib.GetBoxDirection();
+        var parcelData = getTargetParcelWithEdges();
         logDebug("===== Parcel Edge Length Calculation Started =====" + endStr);
-        if (!Array.isArray(boxData) || boxData.length === 0) {
+        if (!parcelData) {
             logDebug("Error: No valid parcel coordinate data detected" + endStr);
             return undefined;
         }
-        var sortedBoxes = boxData.slice().sort(function(a, b) {
-            return getBoxSortKey(a, direction) - getBoxSortKey(b, direction);
-        });
-        var targetBox = sortedBoxes[0];
-        var targetBoxCenter = getBoxCenter(targetBox);
+        var targetBox = parcelData.targetBox;
+        var targetBoxCenter = parcelData.targetBoxCenter;
         logDebug("Selected calculation target: Last parcel in movement path, center point X=" + targetBoxCenter.x.toFixed(2) + ", Y=" + targetBoxCenter.y.toFixed(2) + endStr);
         logDebug("4 vertex coordinates of target parcel: " + endStr);
         for (var j = 0; j < targetBox.length; j++) {
             logDebug("Vertex " + j + ": X=" + targetBox[j].x + ", Y=" + targetBox[j].y + endStr);
         }
-        var edges = [[targetBox[0], targetBox[1]], [targetBox[1], targetBox[2]], [targetBox[2], targetBox[3]], [targetBox[3], targetBox[0]]];
+        var edges = parcelData.edges;
         var bestEdge = null;
         var bestScore = Infinity;
         logDebug("Using default logic: Finding most horizontal edge (min |dy|)" + endStr);
         for (var i = 0; i < edges.length; i++) {
-            var p1 = edges[i][0], p2 = edges[i][1];
-            var dx = p2.x - p1.x, dy = p2.y - p1.y;
+            var p1 = edges[i].p1, p2 = edges[i].p2;
+            var dx = edges[i].dx, dy = edges[i].dy;
             var score = Math.abs(dy);
             logDebug("Edge " + i + ": dx=" + dx.toFixed(2) + ", dy=" + dy.toFixed(2) + ", score=|dy|=" + score.toFixed(2) + endStr);
             if (score < bestScore) {
                 bestScore = score;
-                bestEdge = [p1, p2];
+                bestEdge = edges[i];
             }
         }
-        if (!bestEdge || bestEdge.length < 2) {
+        if (!bestEdge) {
             logDebug("Error: Failed to find valid edge" + endStr);
             return undefined;
         }
-        var a = bestEdge[0], b = bestEdge[1];
-        var edgeLength = Math.sqrt((b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y));
+        var a = bestEdge.p1, b = bestEdge.p2;
+        var edgeLength = bestEdge.length;
         logDebug("===== Edge Selection Result =====" + endStr);
         logDebug("Selected edge: Point A (x=" + a.x.toFixed(2) + ", y=" + a.y.toFixed(2) + ") → Point B (x=" + b.x.toFixed(2) + ", y=" + b.y.toFixed(2) + ")" + endStr);
         logDebug("Edge length: " + edgeLength.toFixed(2) + " pixels" + endStr);
