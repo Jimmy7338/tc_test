@@ -5,6 +5,18 @@ const fs = require("fs");
 const path = require("path");
 const vm = require("vm");
 
+function applyMetadataFlagsPatch(code, patch) {
+  if (!patch || typeof patch !== "object") return code;
+  let out = code;
+  for (const key of Object.keys(patch)) {
+    const val = patch[key];
+    if (val !== true && val !== false) continue;
+    const re = new RegExp(`^const ${key} = (true|false);`, "gm");
+    out = out.replace(re, `const ${key} = ${val};`);
+  }
+  return out;
+}
+
 function parseArgs(argv) {
   const args = {};
   for (let i = 2; i < argv.length; i += 1) {
@@ -24,6 +36,52 @@ function toStringValue(v, fallback) {
   return String(v);
 }
 
+function resolveStateFilePath(args, input) {
+  const fromCli = args["state-file"] || args.statefile;
+  if (fromCli) {
+    return path.resolve(String(fromCli));
+  }
+  if (input && input.persistStateFile) {
+    return path.resolve(String(input.persistStateFile));
+  }
+  return null;
+}
+
+function loadPersistedStores(stateFilePath) {
+  if (!stateFilePath || !fs.existsSync(stateFilePath)) {
+    return { globalStringStore: {}, globalNumericStore: {}, error: null };
+  }
+  try {
+    const raw = JSON.parse(fs.readFileSync(stateFilePath, "utf8"));
+    const gs =
+      raw.globalStringStore && typeof raw.globalStringStore === "object" && !Array.isArray(raw.globalStringStore)
+        ? raw.globalStringStore
+        : {};
+    const gn =
+      raw.globalNumericStore && typeof raw.globalNumericStore === "object" && !Array.isArray(raw.globalNumericStore)
+        ? raw.globalNumericStore
+        : {};
+    return { globalStringStore: gs, globalNumericStore: gn, error: null };
+  } catch (e) {
+    return {
+      globalStringStore: {},
+      globalNumericStore: {},
+      error: e.message || String(e),
+    };
+  }
+}
+
+function savePersistedStores(stateFilePath, globalStringData, globalNumericData) {
+  if (!stateFilePath) return;
+  const payload = {
+    version: 1,
+    savedAt: new Date().toISOString(),
+    globalStringStore: globalStringData,
+    globalNumericStore: globalNumericData,
+  };
+  fs.writeFileSync(stateFilePath, JSON.stringify(payload, null, 2), "utf8");
+}
+
 function main() {
   const args = parseArgs(process.argv);
   const scriptPath = path.resolve(args.script || "");
@@ -38,10 +96,21 @@ function main() {
   }
 
   const input = JSON.parse(fs.readFileSync(inputPath, "utf8"));
+  const stateFilePath = resolveStateFilePath(args, input);
+  const hadPersistFileAtStart = Boolean(stateFilePath && fs.existsSync(stateFilePath));
+  const persisted = loadPersistedStores(stateFilePath);
   const injected = input.injected || {};
   const vn = input.vnlib || {};
-  const globalStringData = Object.assign({}, input.globalStringStore || {});
-  const globalNumericData = Object.assign({}, input.globalNumericStore || {});
+  const globalStringData = Object.assign(
+    {},
+    persisted.globalStringStore,
+    input.globalStringStore || {}
+  );
+  const globalNumericData = Object.assign(
+    {},
+    persisted.globalNumericStore,
+    input.globalNumericStore || {}
+  );
   const logs = [];
   const outputs = [];
   const callbackResults = [];
@@ -153,7 +222,10 @@ function main() {
     sandbox[k] = injected[k];
   });
 
-  const code = fs.readFileSync(scriptPath, "utf8");
+  let code = fs.readFileSync(scriptPath, "utf8");
+  if (input.metadataFlagsPatch) {
+    code = applyMetadataFlagsPatch(code, input.metadataFlagsPatch);
+  }
   const started = Date.now();
   let error = null;
   try {
@@ -196,6 +268,17 @@ function main() {
   }
   const elapsedMs = Date.now() - started;
 
+  let stateSaved = false;
+  let stateSaveError = null;
+  if (stateFilePath) {
+    try {
+      savePersistedStores(stateFilePath, globalStringData, globalNumericData);
+      stateSaved = true;
+    } catch (e) {
+      stateSaveError = e.message || String(e);
+    }
+  }
+
   const result = {
     ok: !error,
     elapsedMs,
@@ -208,6 +291,17 @@ function main() {
     globalNumericStore: globalNumericData,
     outputCount: outputs.length,
     logCount: logs.length,
+    stateFile: stateFilePath,
+    stateReadFromFile: hadPersistFileAtStart,
+    stateSaved,
+    stateSaveError: stateSaveError || undefined,
+    persistedKeysPreview: stateFilePath
+      ? {
+          globalStringKeys: Object.keys(globalStringData).slice(0, 64),
+          globalNumericKeys: Object.keys(globalNumericData).slice(0, 64),
+        }
+      : undefined,
+    stateLoadError: persisted.error || undefined,
   };
 
   fs.writeFileSync(outputPath, JSON.stringify(result, null, 2), "utf8");

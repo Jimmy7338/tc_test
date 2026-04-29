@@ -1,0 +1,28 @@
+Camera.PostScan	0009	1Z5X5A780341198602	[)>01969212800008400031Z41198602UPSN5X5A7807B.PH/*5LH(GPF'40GM2AG4Q"$GAN&FFOZ0-,+%H(J
+	42092128	0	0	Metadata.Skewness=5.77;Metadata.Time=2026-04-28T22:52:27.789Z;Metadata.Distance=true;Metadata.Camera.Status=Online4;Metadata.Box=Short;Metadata.boxlength=711.50
+
+
+
+[2026-04-28 22:52:28.579]# RECV ASCII>
+Camera.PostScan	0010	!!!!	!!!!	!!!!	2	0	Metadata.Skewness=1.22;Metadata.Time=2026-04-28T22:52:28.388Z;Metadata.Distance=false;Metadata.Camera.Status=Online4;Metadata.Box=Short;Metadata.boxlength=679.33
+
+
+
+[2026-04-28 22:52:29.261]# RECV ASCII>
+Camera.PostScan	0011	1Z5X5A780341701183	[)>01967990700008400031Z41701183UPSN5X5A7807PD"CEV0â UYS3&'â *YJ$A6
+H.4ZUP27(
+%IV:SFRH%S
+	????	0	0	Metadata.Skewness=41.77;Metadata.Time=2026-04-28T22:52:29.070Z;Metadata.Distance=false;Metadata.Camera.Status=Online4;Metadata.Box=Short;Metadata.boxlength=729.39
+
+
+
+[2026-04-28 22:52:30.016]# RECV ASCII>
+Camera.PostScan	0012	1Z5X5A780340568802	[)>01967990700008400031Z40568802UPSN5X5A7807PD"CEV0â UYS3&'â *YJ$A6
+H.4ZUP27(
+%IV:SFRH%S
+	????	0	0	Metadata.Skewness=88.79;Metadata.Time=2026-04-28T22:52:29.827Z;Metadata.Distance=true;Metadata.Camera.Status=Online4;Metadata.Box=Short;Metadata.boxlength=758.49
+
+
+
+[2026-04-28 22:52:30.785]# RECV ASCII>
+Camera.PostScan	0013	1Z5X5A780341520397	????	????	1	0	Metadata.Skewness=40.65;Metadata.Time=2026-04-28T22:52:30.595Z;Metadata.Distance=false;Metadata.Camera.Status=Online4;Metadata.Box=Short;Metadata.boxlength=750.84

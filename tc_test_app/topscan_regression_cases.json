@@ -651,5 +651,101 @@
     },
     "globalStringStore": {},
     "globalNumericStore": {}
+  },
+  {
+    "_name": "align_bypass_persist_false_stored_implies_bypass_jobid",
+    "_comment": "与 before 对齐：GlobalString bypassMode==\"false\" 时初始 bypassMode 为 true，JobId 固定 00-1；master 用 ===\"true\" 则为 false，走累加号",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "1Z8252200388999091",
+      "center": "{3100,2100}",
+      "ROI_number": "1",
+      "time": "2026/04/29 10:00:00:001",
+      "device_number": "0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {
+      "bypassMode": "false",
+      "jobIdCounter": "0"
+    },
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "align_bypass_persist_true_stored_implies_normal_jobid",
+    "_comment": "与 before 对齐：持久化 \"true\" 时 before/rb 初始为正常计数；master 误判为 bypass 则 JobId 为 00-1",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "1Z8252200388999092",
+      "center": "{3100,2200}",
+      "ROI_number": "1",
+      "time": "2026/04/29 10:00:01:001",
+      "device_number": "0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {
+      "bypassMode": "true",
+      "jobIdCounter": "41"
+    },
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "align_metadata_gate_four_off_camera_on_empty_metadata",
+    "_comment": "与 before 对齐：仅四元开关全关时 before/rb 不拼 metadata；master 仍因 Camera 等开关进入 buildMetadata，末列 metadata 非空",
+    "timeoutMs": 5000,
+    "metadataFlagsPatch": {
+      "useTimeInMetadata": false,
+      "useAngleInMetadata": false,
+      "useDeviceInMetadata": false,
+      "useBoxPassLineInMetadata": false
+    },
+    "injected": {
+      "code": "1Z8252200388999093",
+      "center": "{3200,2300}",
+      "ROI_number": "1",
+      "time": "2026/04/29 10:00:02:001",
+      "device_number": "0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 2,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {},
+    "globalNumericStore": {}
   }
 ]

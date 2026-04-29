@@ -4,6 +4,7 @@
 import json
 import subprocess
 import tempfile
+from typing import Optional
 import threading
 import webbrowser
 import shutil
@@ -21,6 +22,7 @@ DEFAULT_SIDE_SCRIPT = PROJECT_ROOT / "tc_Lateral_1.js"
 RUNNER = ROOT / "tc_script_runner.js"
 CASE_GENERATOR = ROOT / "tc_case_generator.py"
 RESULT_DIR = PROJECT_ROOT / "result_tmp"
+DEFAULT_PERSIST_STATE_PATH = RESULT_DIR / "tc_runner_persistent_state.json"
 
 DEFAULT_TOP_INPUT = {
     "timeoutMs": 5000,
@@ -109,7 +111,7 @@ def build_runtime_env():
     return env
 
 
-def run_case(script_path: Path, test_input: dict):
+def run_case(script_path: Path, test_input: dict, state_file: Optional[Path] = None):
     if not script_path.exists():
         fallback_script = PROJECT_ROOT / script_path.name
         if fallback_script.exists():
@@ -148,6 +150,8 @@ def run_case(script_path: Path, test_input: dict):
         "--output",
         str(out_json),
     ]
+    if state_file is not None:
+        cmd.extend(["--state-file", str(state_file)])
 
     completed = subprocess.run(
         cmd,
@@ -168,6 +172,25 @@ def run_case(script_path: Path, test_input: dict):
     lines.append(f"运行状态: {'成功' if result.get('ok') else '失败'}")
     lines.append(f"耗时: {result.get('elapsedMs')} ms")
     lines.append(f"日志条数: {result.get('logCount')} | 输出条数: {result.get('outputCount')}")
+    if result.get("stateFile"):
+        lines.append("-" * 80)
+        lines.append("[跨次持久化 GlobalString / GlobalNumeric]")
+        lines.append(f"状态文件: {result.get('stateFile')}")
+        lines.append(
+            f"本次启动前已存在状态文件: {'是' if result.get('stateReadFromFile') else '否'}"
+        )
+        lines.append(f"本次运行后已写回磁盘: {'是' if result.get('stateSaved') else '否'}")
+        if result.get("stateLoadError"):
+            lines.append(f"读取警告: {result['stateLoadError']}")
+        if result.get("stateSaveError"):
+            lines.append(f"保存失败: {result['stateSaveError']}")
+        preview = result.get("persistedKeysPreview") or {}
+        gsk = preview.get("globalStringKeys") or []
+        gnk = preview.get("globalNumericKeys") or []
+        if gsk:
+            lines.append("GlobalString 键(至多64): " + ", ".join(gsk))
+        if gnk:
+            lines.append("GlobalNumeric 键(至多64): " + ", ".join(str(k) for k in gnk))
     lines.append("-" * 80)
     lines.append("[VNLib.Log]")
     logs = result.get("logs", [])
@@ -250,7 +273,7 @@ def parse_test_cases_input(input_text: str):
     return cases
 
 
-def run_cases(script_path: Path, input_text: str):
+def run_cases(script_path: Path, input_text: str, state_file: Optional[Path] = None):
     cases = parse_test_cases_input(input_text)
     run_results = []
     text_parts = []
@@ -261,7 +284,9 @@ def run_cases(script_path: Path, input_text: str):
 
     for idx, case_input in enumerate(cases, 1):
         try:
-            result, text_result, out_json, out_log = run_case(script_path, case_input)
+            result, text_result, out_json, out_log = run_case(
+                script_path, case_input, state_file=state_file
+            )
             run_results.append({
                 "index": idx,
                 "ok": bool(result.get("ok")),
@@ -314,6 +339,8 @@ def run_tk_mode():
             self.test_mode_var = tk.StringVar(value="top")
             self.script_path_var = tk.StringVar(value=str(DEFAULT_SCRIPT))
             self.log_keyword_var = tk.StringVar(value="")
+            self.persist_var = tk.BooleanVar(value=False)
+            self.persist_path_var = tk.StringVar(value=str(DEFAULT_PERSIST_STATE_PATH))
             self.last_result_path = None
             self._search_keyword = ""
             self._search_hits = []
@@ -427,6 +454,18 @@ def run_tk_mode():
             ttk.Button(path_card, text="选择脚本", command=self.choose_script, style="App.TButton").pack(side=tk.LEFT, padx=(0, 6))
             ttk.Button(path_card, text="恢复默认输入", command=self._fill_default_input, style="App.TButton").pack(side=tk.LEFT)
 
+            persist_card = ttk.LabelFrame(root, text="跨次运行状态（历史码、任务时间等 GlobalString/GlobalNumeric）", style="Card.TLabelframe", padding=(10, 8))
+            persist_card.pack(fill=tk.X, pady=(0, 8))
+            tk.Checkbutton(
+                persist_card,
+                text="启用持久化（多次运行间读写同一状态文件）",
+                variable=self.persist_var,
+            ).pack(side=tk.LEFT)
+            ttk.Label(persist_card, text="状态文件:", style="App.TLabel").pack(side=tk.LEFT, padx=(12, 4))
+            ttk.Entry(persist_card, textvariable=self.persist_path_var, width=72).pack(side=tk.LEFT, padx=(0, 6), fill=tk.X, expand=True)
+            ttk.Button(persist_card, text="选择文件", command=self.choose_state_file, style="App.TButton").pack(side=tk.LEFT, padx=(0, 6))
+            ttk.Button(persist_card, text="清空状态", command=self.clear_persistent_state, style="App.TButton").pack(side=tk.LEFT)
+
             toolbar = ttk.Frame(root, style="App.TFrame")
             toolbar.pack(fill=tk.X, pady=(0, 8))
             ttk.Button(toolbar, text="运行测试", command=self.run_test, style="Primary.TButton").pack(side=tk.LEFT)
@@ -539,6 +578,43 @@ def run_tk_mode():
             if selected:
                 self.script_path_var.set(selected)
 
+        def _persist_state_path(self) -> Optional[Path]:
+            if not self.persist_var.get():
+                return None
+            raw = self.persist_path_var.get().strip()
+            if not raw:
+                return None
+            p = Path(raw).expanduser()
+            try:
+                p.parent.mkdir(parents=True, exist_ok=True)
+            except OSError:
+                pass
+            return p
+
+        def choose_state_file(self):
+            initial = self.persist_path_var.get().strip() or str(DEFAULT_PERSIST_STATE_PATH)
+            initial_dir = str(Path(initial).parent) if initial else str(RESULT_DIR)
+            selected = filedialog.asksaveasfilename(
+                title="选择或新建持久化状态文件",
+                initialdir=initial_dir,
+                initialfile=Path(initial).name if initial else "tc_runner_persistent_state.json",
+                defaultextension=".json",
+                filetypes=[("JSON", "*.json"), ("All Files", "*.*")],
+            )
+            if selected:
+                self.persist_path_var.set(selected)
+
+        def clear_persistent_state(self):
+            p = Path(self.persist_path_var.get().strip() or str(DEFAULT_PERSIST_STATE_PATH)).expanduser()
+            try:
+                if p.exists():
+                    p.unlink()
+                    messagebox.showinfo("已清空", f"已删除状态文件:\n{p}")
+                else:
+                    messagebox.showinfo("提示", f"文件不存在，无需删除:\n{p}")
+            except OSError as exc:
+                messagebox.showerror("清空失败", str(exc))
+
         def clear_output(self):
             self.output_text.delete("1.0", tk.END)
             self._reset_search_state()
@@ -638,7 +714,11 @@ def run_tk_mode():
         def run_test(self):
             script_path = Path(self.script_path_var.get().strip())
             try:
-                run_results, all_text = run_cases(script_path, self.input_text.get("1.0", tk.END))
+                run_results, all_text = run_cases(
+                    script_path,
+                    self.input_text.get("1.0", tk.END),
+                    state_file=self._persist_state_path(),
+                )
                 latest_result = next(
                     (item["result_path"] for item in reversed(run_results) if item.get("result_path")),
                     None,
@@ -658,6 +738,7 @@ def run_tk_mode():
 
 def run_web_mode():
     default_json = json.dumps(DEFAULT_TOP_INPUT, ensure_ascii=False, indent=2)
+    default_persist_attr = json.dumps(str(DEFAULT_PERSIST_STATE_PATH))
     default_node = resolve_node_bin() or "<not-found>"
 
     class Handler(BaseHTTPRequestHandler):
@@ -684,12 +765,19 @@ input{{width:100%;padding:6px}} button{{padding:8px 14px;margin-right:8px}} pre{
 <div style="margin-bottom:8px;color:#666">Runner: {str(RUNNER)} | Node: {default_node}</div>
 <div>脚本路径</div><input id="script" value="{str(DEFAULT_SCRIPT)}"/>
 <div style="margin-top:8px">测试输入 JSON</div><textarea id="input">{default_json}</textarea>
+<div style="margin-top:10px"><label><input type="checkbox" id="persist"/> 跨次持久化 GlobalString/GlobalNumeric</label></div>
+<div style="margin-top:4px">状态文件路径</div><input id="persistPath" style="width:100%;padding:6px;box-sizing:border-box" value={default_persist_attr}/>
 <div style="margin-top:8px"><button onclick="runTest()">运行测试</button></div>
 <div id="meta" style="margin-top:8px;color:#333"></div>
 <pre id="out"></pre>
 <script>
 async function runTest(){{
-  const payload={{script:document.getElementById('script').value,inputText:document.getElementById('input').value}};
+  const payload={{
+    script:document.getElementById('script').value,
+    inputText:document.getElementById('input').value,
+    persistEnabled:document.getElementById('persist').checked,
+    persistPath:document.getElementById('persistPath').value
+  }};
   const res=await fetch('/run',{{method:'POST',headers:{{'Content-Type':'application/json'}},body:JSON.stringify(payload)}});
   const data=await res.json();
   if(!data.ok){{document.getElementById('meta').innerText='运行失败';document.getElementById('out').innerText=data.error||'unknown';return;}}
@@ -713,7 +801,19 @@ async function runTest(){{
                 body = self.rfile.read(length).decode("utf-8")
                 payload = json.loads(body)
                 script_path = Path(payload.get("script", "")).expanduser().resolve()
-                run_results, text_result = run_cases(script_path, payload.get("inputText", "{}"))
+                state_file = None
+                if payload.get("persistEnabled"):
+                    sp = (payload.get("persistPath") or "").strip() or str(DEFAULT_PERSIST_STATE_PATH)
+                    state_file = Path(sp).expanduser()
+                    try:
+                        state_file.parent.mkdir(parents=True, exist_ok=True)
+                    except OSError:
+                        pass
+                run_results, text_result = run_cases(
+                    script_path,
+                    payload.get("inputText", "{}"),
+                    state_file=state_file,
+                )
                 result_files = [str(item["result_path"]) for item in run_results if item.get("result_path")]
                 log_files = [str(item["log_path"]) for item in run_results if item.get("log_path")]
                 self._send_json({

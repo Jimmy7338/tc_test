@@ -100,6 +100,88 @@ Use these as reusable patterns when similar field issues appear:
 - Skewness anomalies should be validated from angle-calculation logs first; if logs show wrong edge selection, update angle edge-picking logic.
 - If all decoded codes stay in one ROI while script expects another ROI mode, enlarge software ROI region first, then retest before code changes.
 
+### ROI Dual-Device Decision + Versioned Fallback (2026-04-29)
+
+For sites using two side-scan devices and nested ROIs (small ROI inside large ROI), use this explicit decision model:
+
+- Each side-scan device reports whether current package belongs to small ROI or large ROI.
+- Host ROI mode decision:
+  - if both side devices indicate small ROI -> host uses small ROI mode;
+  - if either side device indicates large ROI -> host uses large ROI mode.
+
+When diagnosing "`!!!!` vs `????`" in this setup, always separate **ROI selection** from **top-scan fallback behavior**:
+
+- New script expected behavior:
+  - if host selected small ROI but no code remains in small ROI after filtering, output should follow no-code path (`????`), not fallback to large ROI.
+- Old script behavior (legacy):
+  - if selected small ROI has no code, script may fallback to large-ROI codes;
+  - if fallback sees two Maxicode values (e.g., one trigger catches two packages), output can become `!!!!` due to same-type conflict.
+
+Practical implication:
+
+- A field report like "expected `????`, got `!!!!`" can be correct if customer is still running an old script slot/version.
+- Before changing logic, confirm actual deployed script text/version in upper-computer script slot.
+
+### Fast Triage Template for This Case Type
+
+Use this order to avoid mixing causes:
+
+1. Confirm customer expected sequence per box (e.g., last 4 digits list) and identify first wrong task ID.
+2. Confirm host ROI mode for that task (`Short`/`Tall` or equivalent small/large mode).
+3. Check `ROI_number` distribution and post-filter count:
+   - whether selected ROI has zero codes;
+   - whether non-selected ROI has multiple main codes.
+4. Check whether output branch is from:
+   - no-code branch (`????`), or
+   - same-type conflict branch (`!!!!`).
+5. Map branch to deployed script generation:
+   - legacy fallback branch present -> old behavior possible;
+   - no-fallback branch -> expect `????` when selected ROI is empty.
+
+### Angle Interpretation Guardrail
+
+For customer scenarios where parcels are expected only horizontal/vertical:
+
+- Expected skewness should cluster near `0°` or `90°`.
+- Values around `35°-55°` are a strong indicator of edge-picking mismatch (e.g., wrong edge pair / diagonal-like selection) rather than true package pose.
+- Diagnose with angle debug logs first (selected vertices/edge and edge scores) before changing business output rules.
+
+### Customer-Driven Diagnostic Reasoning Pattern (learned 2026-04-29)
+
+Use this reasoning pattern when customer already has a strong field hypothesis.
+
+Core principle:
+
+- Start from customer's real business rule and acceptance criteria, not from raw script branches.
+- Treat script/algo logs as evidence to confirm or reject each business-step assumption.
+
+Reasoning sequence:
+
+1. Reconstruct expected business behavior in customer language first:
+   - expected box sequence/order;
+   - expected ROI-selection rule across side devices;
+   - expected fallback policy when selected ROI has no code;
+   - expected angle range from physical placement constraints.
+2. Map each expectation to concrete log checkpoints:
+   - side-device ROI decision evidence;
+   - host ROI mode evidence;
+   - filtered code counts by ROI;
+   - output branch evidence (`????` / `!!!!`);
+   - angle edge-selection evidence.
+3. Separate three layers explicitly:
+   - symptom: what customer sees (`!!!!`, `????`, skewness value);
+   - trigger condition: what branch fired in script;
+   - root cause: why that branch fired (ROI geometry, capture timing, deployed script version, etc.).
+4. Resolve apparent contradictions by version/context checks:
+   - "should be `????` but got `!!!!`" may be fully correct under old script fallback behavior.
+5. Output action in minimal-risk order:
+   - configuration/ROI geometry and runtime slot/version verification first;
+   - script change only after configuration and version mismatch are ruled in/out.
+
+Communication rule:
+
+- If customer root-cause narrative matches log evidence, adopt their framing and refine it with proof lines, instead of replacing it with a code-first explanation.
+
 When a customer provides a batch test report, ask for:
 
 - expected code sequence per box;
