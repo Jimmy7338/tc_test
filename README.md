@@ -8,6 +8,7 @@
 - 其他脚本（按现场需求使用）：`tc_topscan_node.js`、`tc_Lateral_1.js`、`tc_Lateral_2.js`
 - 测试程序目录：`tc_test_app`
   - 可视化测试程序：`tc_test_app/tc_visual_test_app.py`
+  - 用例生成器（可视化）：`tc_test_app/tc_case_generator.py`
   - Node 执行器：`tc_test_app/tc_script_runner.js`
 - 测试结果目录：`result_tmp`
   - 结构化结果：`test_result_*.json`
@@ -18,9 +19,10 @@
 
 1. 在 `tc_topscan_master.js` 上做规则修改。
 2. 启动 `tc_test_app/tc_visual_test_app.py`（PC GUI）。
-3. 在 GUI 中编辑测试输入 JSON（支持单用例/多用例）。
-4. 点击“运行测试”，查看日志和输出结果。
-5. 到 `result_tmp` 对照 `json` 与 `log.txt` 做回归确认。
+3. 在 GUI 中选择测试模式（`top` 顶扫 / `side` 侧扫）。
+4. 在 GUI 中编辑或导入测试输入 JSON（支持单用例/多用例）。
+5. 点击“运行测试”，查看日志、回调结果和输出结果。
+6. 到 `result_tmp` 对照 `json` 与 `log.txt` 做回归确认。
 
 ## 3. 环境要求
 
@@ -41,6 +43,12 @@ npm --version
 
 ```powershell
 python "f:\tc\tc_test_app\tc_visual_test_app.py" --gui
+```
+
+生成测试输入 JSON（可视化）：
+
+```powershell
+python "f:\tc\tc_test_app\tc_case_generator.py"
 ```
 
 常用模式：

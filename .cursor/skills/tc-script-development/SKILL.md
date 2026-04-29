@@ -39,6 +39,7 @@ Additional skill references:
 - For customer-safe runtime concepts, see [runtime-reference.md](runtime-reference.md).
 - For log-driven field troubleshooting paths, see [troubleshooting.md](troubleshooting.md).
 - For common script modification patterns and sync rules, see [script-patterns.md](script-patterns.md).
+- For customer-safe upper/lower-computer business boundaries and collaboration chain, see [system-business-safe-guide.md](system-business-safe-guide.md).
 
 ## Default Log-Driven Workflow
 
@@ -67,6 +68,45 @@ EOF
 9. Only propose script changes after ruling out configuration and usage mistakes from the log evidence.
 
 Do not skip the extraction step for long pasted logs. Manual inspection is acceptable only for very short snippets where the complete task context is already visible.
+
+## Customer Bug Triage Loop
+
+For customer-facing troubleshooting, always follow this closed loop and keep each step explicit in your reply:
+
+1. Clarify problem and expected behavior.
+2. Read logs around the reported task/job ID.
+3. Find key log markers that prove where behavior changed.
+4. Locate related script logic only when logs indicate script-side decision points.
+5. State handling logic and decision branch in plain language.
+6. Confirm root cause and propose a minimal next action (settings first, script change second).
+
+Required output style for customer troubleshooting:
+
+- `Known facts`: what is confirmed from logs.
+- `First abnormal point`: first line/task where behavior diverges.
+- `Root cause candidate`: setting, mapping, ROI, history, or script logic.
+- `Action`: exactly what to change now.
+- `Recheck`: what to verify in the next trigger/task ID.
+
+Avoid jumping directly to code edits before confirming log evidence.
+
+## Trackonomy Case Heuristics (2026-04-27)
+
+Use these as reusable patterns when similar field issues appear:
+
+- Repeated or unexpected `!!!!` after ROI filtering often means ROI target mismatch, no-target policy, or temporary diagnostic script bypass.
+- Missing one box in a fixed sequence often indicates multi-code enable/recognition delivery settings before script logic defects.
+- Barcode order disorder (`A ? D C E`) requires expected-code list from customer; without expected order, root-cause confidence is low.
+- Skewness anomalies should be validated from angle-calculation logs first; if logs show wrong edge selection, update angle edge-picking logic.
+- If all decoded codes stay in one ROI while script expects another ROI mode, enlarge software ROI region first, then retest before code changes.
+
+When a customer provides a batch test report, ask for:
+
+- expected code sequence per box;
+- first wrong task/job ID;
+- one correct task right before failure;
+- whether multi-code settings changed between tests;
+- current ROI geometry screenshot or coordinates.
 
 ## Runtime Model
 

@@ -26,6 +26,14 @@ This reference is customer-safe. It describes runtime stages and log clues witho
 
 If a variable is `undefined`, inspect upper-computer mapping first. This is more common than a script runtime defect.
 
+For task-level confirmation, prefer this micro-sequence:
+
+1. Find reported `Camera.PostScan <JobId>`.
+2. Verify whether output content matches customer complaint.
+3. Move up to nearest `js log: Debug` lines.
+4. Mark first abnormal branch (ROI filter, classification, history, angle, or command).
+5. Check one immediately previous correct task for contrast.
+
 ## Side-Scan ROI Runtime Chain
 
 1. Side-scan package and ROI data are prepared by the device.
@@ -36,6 +44,12 @@ If a variable is `undefined`, inspect upper-computer mapping first. This is more
 6. The top-scan script maps `Tall` / `Short` to one-based `ROI_number` filtering.
 
 If ROI does not take effect, inspect side-scan return value, group ROI log lines, top-scan ROI mode logs, and `ROI_number` mapping.
+
+Practical mapping reminder:
+
+- Script-side ROI expectations can differ from software ROI labels due to legacy numbering conventions.
+- Validate with coordinates and centers from logs, not name assumptions.
+- If decoded centers consistently land in one software ROI while script targets another, prefer ROI geometry adjustment and retest first.
 
 ## Output and Compensation Chain
 
@@ -49,3 +63,14 @@ For missed-trigger compensation:
 4. Each compensation line consumes a new `JobId`.
 
 If compensation output count is wrong, first inspect customer trigger timing, missed-trigger count logs, and whether the normal output path was executed more than once.
+
+## Skewness/Angle Debug Chain
+
+When customer reports skewness value anomalies:
+
+1. Confirm reported skew value in `Camera.PostScan` metadata.
+2. Locate angle debug block (vertex list, selected edge, final angle).
+3. Verify selected vertices and reference edge are physically correct for conveyor direction.
+4. If edge selection is wrong, treat as angle-calculation logic defect; otherwise treat as upstream coordinate issue.
+
+Do not conclude "algorithm bug" only from final skew number. The selected-edge logs are the decisive evidence.

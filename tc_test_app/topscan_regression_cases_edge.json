@@ -1,0 +1,294 @@
+[
+  {
+    "_name": "edge_onez_contained_in_history_maxicode_then_pick_qr",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "1Z12345678($#;#$)[)>HEAD\u001d1Z99990000\u001dTAIL",
+      "center": "{3000,3000}($#;#$){1200,1200}",
+      "ROI_number": "1($#;#$)1",
+      "time": "2026/04/28 16:30:01:001",
+      "device_number": "0($#;#$)0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {
+      "lastTaskCodes": "[\"[)>ABC\\u001d1Z1234\\u001dXYZ\"]",
+      "codeTimes": "{\"[)>ABC\\\\u001d1Z1234\\\\u001dXYZ\":1760000000000}",
+      "jobIdCounter": "20"
+    },
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "edge_qr_contains_history_onez_skip_qr_pick_onez",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "1Z77778888($#;#$)[)>HEAD\u001d1Z12345678\u001dTAIL",
+      "center": "{1100,1100}($#;#$){1000,1000}",
+      "ROI_number": "1($#;#$)1",
+      "time": "2026/04/28 16:30:01:201",
+      "device_number": "0($#;#$)0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {
+      "lastTaskCodes": "[\"1Z1234\"]",
+      "codeTimes": "{\"1Z1234\":1760000000000}",
+      "jobIdCounter": "21"
+    },
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "edge_history_contains_same_qr_plus_similar_qr",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "[)>EDGE-QR-AAAAA\u001d1Z12340000($#;#$)[)>EDGE-QR-AAAAA\u001d1Z1234",
+      "center": "{1500,1500}($#;#$){1600,1600}",
+      "ROI_number": "1($#;#$)1",
+      "time": "2026/04/28 16:30:01:401",
+      "device_number": "0($#;#$)0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {
+      "lastTaskCodes": "[\"[)>EDGE-QR-AAAAA\\u001d1Z12340000\"]",
+      "codeTimes": "{\"[)>EDGE-QR-AAAAA\\\\u001d1Z12340000\":1760000000000}",
+      "jobIdCounter": "22"
+    },
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "edge_special_1d_in_history_fallback_to_incomplete",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "BSP900001($#;#$)42098888",
+      "center": "{1300,1300}($#;#$){1400,1400}",
+      "ROI_number": "1($#;#$)1",
+      "time": "2026/04/28 16:30:01:601",
+      "device_number": "0($#;#$)0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {
+      "lastTaskCodes": "[\"BSP900001\"]",
+      "codeTimes": "{\"BSP900001\":1760000000000}",
+      "jobIdCounter": "23"
+    },
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "edge_no_center_for_main_codes_goes_postal_or_placeholder",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "1Z33334444($#;#$)[)>EDGE-NOCENTER\u001d1Z33334444($#;#$)42097777",
+      "center": "{1000,1000}",
+      "ROI_number": "1($#;#$)1($#;#$)1",
+      "time": "2026/04/28 16:30:01:801",
+      "device_number": "0($#;#$)0($#;#$)0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {},
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "edge_roi_values_with_spaces_and_invalid_tokens",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "1Z44445555($#;#$)[)>EDGE-ROI\u001d1Z44445555($#;#$)42096666",
+      "center": "{1000,1000}($#;#$){1100,1100}($#;#$){1200,1200}",
+      "ROI_number": " 1 ($#;#$)x($#;#$)2",
+      "time": "2026/04/28 16:30:02:001",
+      "device_number": "0($#;#$)0($#;#$)0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":0}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {},
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "edge_both_commands_blank_spaces_should_ignore",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "1Z55556666($#;#$)[)>EDGE-CMD\u001d1Z55556666",
+      "center": "{1500,1500}($#;#$){1600,1600}",
+      "ROI_number": "1($#;#$)1",
+      "time": "2026/04/28 16:30:02:201",
+      "device_number": "0($#;#$)0",
+      "strStored": "   ",
+      "strTcpStored": "   ",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {
+      "jobIdCounter": "30"
+    },
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "edge_history_nested_array_flatten",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "1Z66667777($#;#$)[)>EDGE-NEST\u001d1Z66667777($#;#$)42095555",
+      "center": "{1700,1700}($#;#$){1800,1800}($#;#$){1900,1900}",
+      "ROI_number": "1($#;#$)1($#;#$)1",
+      "time": "2026/04/28 16:30:02:401",
+      "device_number": "0($#;#$)0($#;#$)0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {
+      "lastTaskCodes": "[[\"1Z66667777\"],[\"[)>EDGE-NEST\\u001d1Z66667777\"]]",
+      "codeTimes": "{\"1Z66667777\":1760000000000,\"[)>EDGE-NEST\\\\u001d1Z66667777\":1760000000000}",
+      "jobIdCounter": "31"
+    },
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "edge_case_sensitive_special_1d_not_matched_lowercase_b",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "bspLower001($#;#$)42094444",
+      "center": "{2000,2000}($#;#$){2100,2100}",
+      "ROI_number": "1($#;#$)1",
+      "time": "2026/04/28 16:30:02:601",
+      "device_number": "0($#;#$)0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {},
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "edge_roi_json_invalid_should_skip_filter",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "1Z77770001($#;#$)[)>EDGE-ROIJSON\u001d1Z77770001",
+      "center": "{1200,3200}($#;#$){2200,1200}",
+      "ROI_number": "1($#;#$)2",
+      "time": "2026/04/28 16:30:02:801",
+      "device_number": "0($#;#$)0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{bad-json}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {},
+    "globalNumericStore": {}
+  }
+]

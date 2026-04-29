@@ -17,10 +17,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 PROJECT_ROOT = ROOT.parent
 DEFAULT_SCRIPT = PROJECT_ROOT / "tc_topscan_master.js"
+DEFAULT_SIDE_SCRIPT = PROJECT_ROOT / "tc_Lateral_1.js"
 RUNNER = ROOT / "tc_script_runner.js"
+CASE_GENERATOR = ROOT / "tc_case_generator.py"
 RESULT_DIR = PROJECT_ROOT / "result_tmp"
 
-DEFAULT_INPUT = {
+DEFAULT_TOP_INPUT = {
     "timeoutMs": 5000,
     "injected": {
         "code": "1Z1234567890|[)>\\u001E01\\u001DABC\\u001D1Z1234567890\\u001E",
@@ -42,6 +44,29 @@ DEFAULT_INPUT = {
         "onlineSlaveCount": 0,
         "slaveRoiIndex": "{}",
         "roiPoints": "[]",
+    },
+    "globalStringStore": {},
+    "globalNumericStore": {},
+}
+
+DEFAULT_SIDE_INPUT = {
+    "timeoutMs": 5000,
+    "injected": {
+        "is_box_pass_line": False,
+    },
+    "vnlib": {
+        "separator": "|",
+        "missedTriggerCountDuringTask": 0,
+        "boxCoordinates": "[[{\"x\":3998,\"y\":1663},{\"x\":4308,\"y\":3323},{\"x\":2191,\"y\":3682},{\"x\":1833,\"y\":2021}]]",
+        "boxLineCoordinates": "[[{\"x\":1460,\"y\":1630},{\"x\":3380,\"y\":1790}]]",
+        "boxDirection": 3,
+        "onlineSlaveCount": 1,
+        "slaveRoiIndex": "{\"1\":-1}",
+        "roiPoints": "[{\"index\":0,\"points\":[{\"x\":840,\"y\":1300},{\"x\":5400,\"y\":1300},{\"x\":840,\"y\":3640},{\"x\":5400,\"y\":3640}]},{\"index\":1,\"points\":[{\"x\":820,\"y\":140},{\"x\":5460,\"y\":140},{\"x\":820,\"y\":3640},{\"x\":5460,\"y\":3640}]}]",
+        "invokeCallbackName": "SetRoiIndex",
+        "invokeCallbackArg": False,
+        "autoInvokeRegisterCallback": True,
+        "autoInvokeSetRoiIndex": True,
     },
     "globalStringStore": {},
     "globalNumericStore": {},
@@ -149,6 +174,14 @@ def run_case(script_path: Path, test_input: dict):
     if logs:
         for idx, line in enumerate(logs, 1):
             lines.append(f"{idx:04d}. {line}")
+    else:
+        lines.append("(无)")
+
+    lines.append("-" * 80)
+    lines.append("[Callback Results]")
+    callback_results = result.get("callbackResults", [])
+    if callback_results:
+        lines.append(json.dumps(callback_results, ensure_ascii=False, indent=2))
     else:
         lines.append("(无)")
 
@@ -278,6 +311,7 @@ def run_tk_mode():
             self.master.geometry("1320x900")
             self.master.minsize(1120, 760)
             self.current_theme = "light"
+            self.test_mode_var = tk.StringVar(value="top")
             self.script_path_var = tk.StringVar(value=str(DEFAULT_SCRIPT))
             self.log_keyword_var = tk.StringVar(value="")
             self.last_result_path = None
@@ -379,6 +413,15 @@ def run_tk_mode():
 
             path_card = ttk.LabelFrame(root, text="脚本配置", style="Card.TLabelframe", padding=(10, 8))
             path_card.pack(fill=tk.X, pady=(0, 8))
+            ttk.Label(path_card, text="模式:", style="App.TLabel").pack(side=tk.LEFT)
+            ttk.Combobox(
+                path_card,
+                textvariable=self.test_mode_var,
+                state="readonly",
+                values=["top", "side"],
+                width=8,
+            ).pack(side=tk.LEFT, padx=(6, 8))
+            ttk.Button(path_card, text="应用模式", command=self.apply_test_mode, style="App.TButton").pack(side=tk.LEFT, padx=(0, 8))
             ttk.Label(path_card, text="脚本路径:", style="App.TLabel").pack(side=tk.LEFT)
             ttk.Entry(path_card, textvariable=self.script_path_var).pack(side=tk.LEFT, padx=8, fill=tk.X, expand=True)
             ttk.Button(path_card, text="选择脚本", command=self.choose_script, style="App.TButton").pack(side=tk.LEFT, padx=(0, 6))
@@ -389,6 +432,8 @@ def run_tk_mode():
             ttk.Button(toolbar, text="运行测试", command=self.run_test, style="Primary.TButton").pack(side=tk.LEFT)
             ttk.Button(toolbar, text="打开结果文件", command=self.open_result_file, style="App.TButton").pack(side=tk.LEFT, padx=8)
             ttk.Button(toolbar, text="清空输出区", command=self.clear_output, style="App.TButton").pack(side=tk.LEFT)
+            ttk.Button(toolbar, text="打开生成器", command=self.open_case_generator, style="App.TButton").pack(side=tk.LEFT, padx=8)
+            ttk.Button(toolbar, text="导入生成JSON", command=self.import_generated_json, style="App.TButton").pack(side=tk.LEFT)
 
             locate_card = ttk.LabelFrame(root, text="问题日志快速定位", style="Card.TLabelframe", padding=(10, 8))
             locate_card.pack(fill=tk.X, pady=(0, 8))
@@ -444,8 +489,46 @@ def run_tk_mode():
             self.splitter.add(output_frame, height=500)
 
         def _fill_default_input(self):
+            selected = DEFAULT_TOP_INPUT if self.test_mode_var.get() == "top" else DEFAULT_SIDE_INPUT
+            self._set_input_text(json.dumps(selected, indent=2, ensure_ascii=False))
+
+        def apply_test_mode(self):
+            mode = self.test_mode_var.get()
+            if mode == "side":
+                self.script_path_var.set(str(DEFAULT_SIDE_SCRIPT))
+            else:
+                self.script_path_var.set(str(DEFAULT_SCRIPT))
+            self._fill_default_input()
+
+        def _set_input_text(self, content: str):
             self.input_text.delete("1.0", tk.END)
-            self.input_text.insert("1.0", json.dumps(DEFAULT_INPUT, indent=2, ensure_ascii=False))
+            self.input_text.insert("1.0", content)
+
+        def open_case_generator(self):
+            if not CASE_GENERATOR.exists():
+                messagebox.showerror("打开失败", f"未找到生成器脚本:\n{CASE_GENERATOR}")
+                return
+            python_exe = sys.executable or "python"
+            try:
+                subprocess.Popen([python_exe, str(CASE_GENERATOR)], cwd=str(ROOT))
+            except Exception as exc:
+                messagebox.showerror("打开失败", f"启动生成器失败:\n{exc}")
+
+        def import_generated_json(self):
+            selected = filedialog.askopenfilename(
+                title="导入生成的测试 JSON",
+                initialdir=str(RESULT_DIR),
+                filetypes=[("JSON Files", "*.json"), ("All Files", "*.*")],
+            )
+            if not selected:
+                return
+            try:
+                raw = Path(selected).read_text(encoding="utf-8")
+                parse_test_cases_input(raw)
+                self._set_input_text(raw)
+                messagebox.showinfo("导入成功", f"已导入测试输入:\n{selected}")
+            except Exception as exc:
+                messagebox.showerror("导入失败", f"JSON 解析失败:\n{exc}")
 
         def choose_script(self):
             selected = filedialog.askopenfilename(
@@ -574,7 +657,7 @@ def run_tk_mode():
 
 
 def run_web_mode():
-    default_json = json.dumps(DEFAULT_INPUT, ensure_ascii=False, indent=2)
+    default_json = json.dumps(DEFAULT_TOP_INPUT, ensure_ascii=False, indent=2)
     default_node = resolve_node_bin() or "<not-found>"
 
     class Handler(BaseHTTPRequestHandler):

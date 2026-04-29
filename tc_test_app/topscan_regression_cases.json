@@ -1,0 +1,655 @@
+[
+  {
+    "_name": "normal_pair_postal",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "42095112($#;#$)1Z8252200388124688($#;#$)[)>\u001e01\u001d96951120000\u001d840\u001d003\u001d1Z88124688\u001dUPSN\u001d825220\u001e07QO.ABC\u001dS\r\u001e\u0004",
+      "center": "{3430.13,2319.76}($#;#$){3240.53,2932.35}($#;#$){2522.42,2380.96}",
+      "ROI_number": "1($#;#$)1($#;#$)1",
+      "time": "2026/04/28 15:28:21:654",
+      "device_number": "0($#;#$)0($#;#$)0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {},
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "only_onez",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "1Z8252200388124688",
+      "center": "{3000,2000}",
+      "ROI_number": "1",
+      "time": "2026/04/28 15:28:22:001",
+      "device_number": "0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {},
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "only_maxicode",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "[)>\u001e01\u001d96951120000\u001d840\u001d003\u001d1Z88124688\u001dUPSN\u001d825220\u001e07QO.ONE\u001dS\r\u001e\u0004",
+      "center": "{2200,2100}",
+      "ROI_number": "1",
+      "time": "2026/04/28 15:28:22:201",
+      "device_number": "0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {},
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "special_1d_priority",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "BSP300001($#;#$)42095113($#;#$)[)>\u001e01\u001d96951120000\u001d840\u001d003\u001d1Z88124689\u001dUPSN\u001d825220\u001e07QO.TWO\u001dS\r\u001e\u0004",
+      "center": "{1000,1000}($#;#$){2000,2000}($#;#$){2800,2400}",
+      "ROI_number": "1($#;#$)1($#;#$)1",
+      "time": "2026/04/28 15:28:22:401",
+      "device_number": "0($#;#$)0($#;#$)0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {},
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "multi_conflict_onez",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "1Z8252200388124688($#;#$)1Z8252200388124699($#;#$)[)>\u001e01\u001d96951120000\u001d840\u001d003\u001d1Z88124688\u001dUPSN\u001d825220\u001e07QO.MUL\u001dS\r\u001e\u0004",
+      "center": "{1100,1100}($#;#$){1300,1200}($#;#$){2200,2200}",
+      "ROI_number": "1($#;#$)1($#;#$)1",
+      "time": "2026/04/28 15:28:22:601",
+      "device_number": "0($#;#$)0($#;#$)0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {},
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "multi_conflict_qr",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "[)>\u001e01\u001d96951120000\u001d840\u001d003\u001d1Z88124681\u001dUPSN\u001d825220\u001e07QO.A\u001dS\r\u001e\u0004($#;#$)[)>\u001e01\u001d96951120000\u001d840\u001d003\u001d1Z88124682\u001dUPSN\u001d825220\u001e07QO.B\u001dS\r\u001e\u0004($#;#$)42095114",
+      "center": "{2000,2000}($#;#$){2050,2050}($#;#$){2400,2400}",
+      "ROI_number": "1($#;#$)1($#;#$)1",
+      "time": "2026/04/28 15:28:22:801",
+      "device_number": "0($#;#$)0($#;#$)0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {},
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "postal_only",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "42095115($#;#$)42095116",
+      "center": "{1600,1600}($#;#$){1700,1700}",
+      "ROI_number": "1($#;#$)1",
+      "time": "2026/04/28 15:28:23:001",
+      "device_number": "0($#;#$)0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {},
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "empty_codes",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "",
+      "center": "",
+      "ROI_number": "",
+      "time": "2026/04/28 15:28:23:201",
+      "device_number": "",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {},
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "history_duplicate_main",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "1Z8252200388124688($#;#$)[)>\u001e01\u001d96951120000\u001d840\u001d003\u001d1Z88124688\u001dUPSN\u001d825220\u001e07QO.DUP\u001dS\r\u001e\u0004($#;#$)42095117",
+      "center": "{2500,2500}($#;#$){2600,2600}($#;#$){2700,2700}",
+      "ROI_number": "1($#;#$)1($#;#$)1",
+      "time": "2026/04/28 15:28:23:401",
+      "device_number": "0($#;#$)0($#;#$)0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {
+      "lastTaskCodes": "[\"1Z8252200388124688\",\"[)>\u001e01\u001d96951120000\u001d840\u001d003\u001d1Z88124688\u001dUPSN\u001d825220\u001e07QO.DUP\u001dS\\r\u001e\\u0004\"]",
+      "codeTimes": "{\"1Z8252200388124688\":1760000000000,\"[)>\\u001e01\\u001d96951120000\\u001d840\\u001d003\\u001d1Z88124688\\u001dUPSN\\u001d825220\\u001e07QO.DUP\\u001dS\\r\\u001e\\u0004\":1760000000000}",
+      "jobIdCounter": "9"
+    },
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "roi_tall_filter",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "1Z8252200388124601($#;#$)[)>\u001e01\u001d96951120000\u001d840\u001d003\u001d1Z88124601\u001dUPSN\u001d825220\u001e07QO.ROI1\u001dS\r\u001e\u0004($#;#$)42095118",
+      "center": "{1200,1200}($#;#$){2200,2200}($#;#$){3200,3200}",
+      "ROI_number": "1($#;#$)2($#;#$)2",
+      "time": "2026/04/28 15:28:23:601",
+      "device_number": "0($#;#$)0($#;#$)0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {},
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "roi_short_filter",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "1Z8252200388124602($#;#$)[)>\u001e01\u001d96951120000\u001d840\u001d003\u001d1Z88124602\u001dUPSN\u001d825220\u001e07QO.ROI2\u001dS\r\u001e\u0004($#;#$)42095119",
+      "center": "{1300,1300}($#;#$){2300,2300}($#;#$){3300,3300}",
+      "ROI_number": "1($#;#$)1($#;#$)2",
+      "time": "2026/04/28 15:28:23:801",
+      "device_number": "0($#;#$)0($#;#$)0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":0}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {},
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "roi_no_match_to_placeholder",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "1Z8252200388124603($#;#$)[)>\u001e01\u001d96951120000\u001d840\u001d003\u001d1Z88124603\u001dUPSN\u001d825220\u001e07QO.ROI3\u001dS\r\u001e\u0004",
+      "center": "{1800,1800}($#;#$){1900,1900}",
+      "ROI_number": "3($#;#$)3",
+      "time": "2026/04/28 15:28:24:001",
+      "device_number": "0($#;#$)0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {},
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "command_bypass_on",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "1Z8252200388124604($#;#$)[)>\u001e01\u001d96951120000\u001d840\u001d003\u001d1Z88124604\u001dUPSN\u001d825220\u001e07QO.CMD\u001dS\r\u001e\u0004",
+      "center": "{2000,2000}($#;#$){2100,2100}",
+      "ROI_number": "1($#;#$)1",
+      "time": "2026/04/28 15:28:24:201",
+      "device_number": "0($#;#$)0",
+      "strStored": "bypass on",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {
+      "bypassMode": "false",
+      "jobIdCounter": "2"
+    },
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "command_bypass_off",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "1Z8252200388124605($#;#$)[)>\u001e01\u001d96951120000\u001d840\u001d003\u001d1Z88124605\u001dUPSN\u001d825220\u001e07QO.CMD2\u001dS\r\u001e\u0004",
+      "center": "{2200,2200}($#;#$){2300,2300}",
+      "ROI_number": "1($#;#$)1",
+      "time": "2026/04/28 15:28:24:401",
+      "device_number": "0($#;#$)0",
+      "strStored": "bypass off",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {
+      "bypassMode": "true",
+      "jobIdCounter": "2"
+    },
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "missed_trigger_compensation",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "1Z8252200388124606($#;#$)[)>\u001e01\u001d96951120000\u001d840\u001d003\u001d1Z88124606\u001dUPSN\u001d825220\u001e07QO.MISS\u001dS\r\u001e\u0004($#;#$)42095120",
+      "center": "{2400,2400}($#;#$){2500,2500}($#;#$){2600,2600}",
+      "ROI_number": "1($#;#$)1($#;#$)1",
+      "time": "2026/04/28 15:28:24:601",
+      "device_number": "0($#;#$)0($#;#$)0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 2,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {
+      "jobIdCounter": "10"
+    },
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "tcp_command_bypass_on",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "1Z8252200388999001($#;#$)[)>\u001e01\u001d96951120000\u001d840\u001d003\u001d1Z88999001\u001dUPSN\u001d825220\u001e07QO.TCP\u001dS\r\u001e\u0004",
+      "center": "{2100,2100}($#;#$){2300,2300}",
+      "ROI_number": "1($#;#$)1",
+      "time": "2026/04/28 15:28:24:801",
+      "device_number": "0($#;#$)0",
+      "strStored": "",
+      "strTcpStored": "bypass on",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {
+      "bypassMode": "false",
+      "jobIdCounter": "4"
+    },
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "strStored_priority_over_tcp",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "1Z8252200388999002($#;#$)[)>\u001e01\u001d96951120000\u001d840\u001d003\u001d1Z88999002\u001dUPSN\u001d825220\u001e07QO.PRIO\u001dS\r\u001e\u0004",
+      "center": "{2150,2150}($#;#$){2350,2350}",
+      "ROI_number": "1($#;#$)1",
+      "time": "2026/04/28 15:28:25:001",
+      "device_number": "0($#;#$)0",
+      "strStored": "bypass off",
+      "strTcpStored": "bypass on",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {
+      "bypassMode": "true",
+      "jobIdCounter": "6"
+    },
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "resetnum_command",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "1Z8252200388999003($#;#$)[)>\u001e01\u001d96951120000\u001d840\u001d003\u001d1Z88999003\u001dUPSN\u001d825220\u001e07QO.RST\u001dS\r\u001e\u0004",
+      "center": "{2000,2200}($#;#$){2400,2600}",
+      "ROI_number": "1($#;#$)1",
+      "time": "2026/04/28 15:28:25:201",
+      "device_number": "0($#;#$)0",
+      "strStored": "resetnum",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {
+      "jobIdCounter": "88"
+    },
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "timeout_history_clear",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "1Z8252200388999004($#;#$)[)>\u001e01\u001d96951120000\u001d840\u001d003\u001d1Z88999004\u001dUPSN\u001d825220\u001e07QO.TIME\u001dS\r\u001e\u0004",
+      "center": "{2050,2050}($#;#$){2450,2450}",
+      "ROI_number": "1($#;#$)1",
+      "time": "2026/04/28 15:28:25:401",
+      "device_number": "0($#;#$)0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {
+      "lastTaskCodes": "[\"1Z8252200388999004\",\"[)>\u001e01\u001d96951120000\u001d840\u001d003\u001d1Z88999004\u001dUPSN\u001d825220\u001e07QO.TIME\u001dS\\r\u001e\\u0004\"]",
+      "codeTimes": "{\"1Z8252200388999004\":1000,\"[)>\\u001e01\\u001d96951120000\\u001d840\\u001d003\\u001d1Z88999004\\u001dUPSN\\u001d825220\\u001e07QO.TIME\\u001dS\\r\\u001e\\u0004\":1000}",
+      "jobIdCounter": "12"
+    },
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "contained_pair_current_task",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "1Z00001234567899($#;#$)[)>AAAAAAAAAAAAAAAAAAAAAAAA12345678TAILXYZ($#;#$)42095121",
+      "center": "{2600,2600}($#;#$){2700,2700}($#;#$){3000,3000}",
+      "ROI_number": "1($#;#$)1($#;#$)1",
+      "time": "2026/04/28 15:28:25:601",
+      "device_number": "0($#;#$)0($#;#$)0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {},
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "closest_main_code_prefers_qr",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "1Z8252200388999005($#;#$)[)>\u001e01\u001d96951120000\u001d840\u001d003\u001d1Z88999005\u001dUPSN\u001d825220\u001e07QO.CLOSE\u001dS\r\u001e\u0004",
+      "center": "{4000,4000}($#;#$){1000,1000}",
+      "ROI_number": "1($#;#$)1",
+      "time": "2026/04/28 15:28:25:801",
+      "device_number": "0($#;#$)0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {
+      "lastTaskCodes": "[]",
+      "codeTimes": "{}",
+      "jobIdCounter": "5"
+    },
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "all_main_in_history_with_postal",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": "1Z8252200388999006($#;#$)[)>\u001e01\u001d96951120000\u001d840\u001d003\u001d1Z88999006\u001dUPSN\u001d825220\u001e07QO.HIST\u001dS\r\u001e\u0004($#;#$)42095122",
+      "center": "{2100,3100}($#;#$){2200,3200}($#;#$){2300,3300}",
+      "ROI_number": "1($#;#$)1($#;#$)1",
+      "time": "2026/04/28 15:28:26:001",
+      "device_number": "0($#;#$)0($#;#$)0",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {
+      "lastTaskCodes": "[\"1Z8252200388999006\",\"[)>\u001e01\u001d96951120000\u001d840\u001d003\u001d1Z88999006\u001dUPSN\u001d825220\u001e07QO.HIST\u001dS\\r\u001e\\u0004\"]",
+      "codeTimes": "{\"1Z8252200388999006\":1760000000000,\"[)>\\u001e01\\u001d96951120000\\u001d840\\u001d003\\u001d1Z88999006\\u001dUPSN\\u001d825220\\u001e07QO.HIST\\u001dS\\r\\u001e\\u0004\":1760000000000}",
+      "jobIdCounter": "14"
+    },
+    "globalNumericStore": {}
+  },
+  {
+    "_name": "invalid_input_non_string",
+    "timeoutMs": 5000,
+    "injected": {
+      "code": 12345,
+      "center": 67890,
+      "ROI_number": "",
+      "time": "2026/04/28 15:28:26:201",
+      "device_number": "",
+      "strStored": "",
+      "strTcpStored": "",
+      "box_coordinate": "",
+      "is_box_pass_line": ""
+    },
+    "vnlib": {
+      "separator": "($#;#$)",
+      "missedTriggerCountDuringTask": 0,
+      "boxCoordinates": "[]",
+      "boxLineCoordinates": "[]",
+      "boxDirection": 3,
+      "onlineSlaveCount": 1,
+      "slaveRoiIndex": "{\"1\":-1}",
+      "roiPoints": "[]"
+    },
+    "globalStringStore": {},
+    "globalNumericStore": {}
+  }
+]

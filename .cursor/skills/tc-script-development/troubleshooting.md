@@ -4,6 +4,19 @@ Use this playbook by symptom. Start with upper-computer variable mapping and scr
 
 When the user pastes logs directly in chat, first run the pasted content through `scripts/extract_log_context.py` using stdin or a temporary file. Use the extracted task segment as the basis for the checks below.
 
+## Standard Investigation Flow
+
+Always execute this order before giving a fix:
+
+1. Clarify expected vs actual behavior (include first affected task/job ID).
+2. Confirm symptom in `Camera.PostScan` lines.
+3. Move upward to the closest script debug lines and ROI/classification logs.
+4. Identify the first abnormal decision point.
+5. Map that point to configuration, ROI geometry/mapping, or script logic.
+6. Give a minimal action and a concrete retest instruction.
+
+If expected barcode order is important, require the expected list (for example `A,B,C,D,E`) before final root-cause conclusion.
+
 ## Log Marker Interpretation
 
 The extraction script highlights log lines by runtime meaning. Use these tags to decide the next check:
@@ -61,6 +74,10 @@ Check in order:
 
 Likely correction: fix side-scan ROI selection settings, group connection/state, or one-based `ROI_number` mapping in the upper-computer.
 
+Trackonomy-like field pattern:
+
+- If logs show all `ROI_number` entries as one value (for example all `2`) but `target ROI index` is another value (for example `1`), treat this as ROI geometry/rule mismatch first. Recommend adjusting software ROI region and retesting before script rewrite.
+
 ## Output Shows Raw Code Or `????` Unexpectedly
 
 Check in order:
@@ -73,6 +90,11 @@ Check in order:
 6. Whether Maxicode special 1D extraction changed the result.
 
 If output fields changed, also inspect compensation output, because compensation may reuse or mirror output structure.
+
+Trackonomy-like field pattern:
+
+- `!!!!` appearing after a previously correct task often indicates the ROI-filtered main code was removed and no valid fallback should be used under current policy.
+- Always compare one correct task immediately before the faulty task to detect which branch changed.
 
 ## Device Freezes Or Screen Stops After Trigger
 
@@ -114,6 +136,18 @@ Check in order:
 5. Lower-computer missed-trigger count is reset per task.
 
 Likely correction: adjust trigger settings/timing, confirm missed-trigger count, or ensure compensation is appended only once.
+
+## Batch Test Checklist (Customer Request Template)
+
+When customer reports "some boxes missing" or "order disorder", request this package once:
+
+1. test folder name and whether code order is fixed in this test only;
+2. expected code suffix per box index;
+3. first wrong task/job ID and one previous correct ID;
+4. whether multi-code enable settings changed during the test batch;
+5. ROI coordinates or screenshot used in this batch.
+
+Without these fields, diagnosis may stay at "possible cause" level only.
 
 ## Command Does Not Work
 

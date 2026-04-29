@@ -44,6 +44,7 @@ function main() {
   const globalNumericData = Object.assign({}, input.globalNumericStore || {});
   const logs = [];
   const outputs = [];
+  const callbackResults = [];
 
   const VNLib = {
     Log(msg) {
@@ -83,6 +84,12 @@ function main() {
           const callbackArg =
             vn.invokeCallbackArg !== undefined ? vn.invokeCallbackArg : false;
           const result = fn(callbackArg);
+          callbackResults.push({
+            name,
+            arg: callbackArg,
+            result,
+            source: "RegisterCallback",
+          });
           logs.push("[RegisterCallback] " + name + " returned: " + result);
         } catch (e) {
           logs.push("[RegisterCallback] " + name + " error: " + e.message);
@@ -155,6 +162,32 @@ function main() {
       filename: path.basename(scriptPath),
       timeout: Number(input.timeoutMs || 5000),
     });
+
+    if (vn.autoInvokeRegisterCallback && typeof sandbox.RegisterCallback === "function") {
+      try {
+        sandbox.RegisterCallback();
+        logs.push("[Runner] RegisterCallback() invoked automatically");
+      } catch (e) {
+        logs.push("[Runner] RegisterCallback() invoke error: " + e.message);
+      }
+    }
+
+    if (vn.autoInvokeSetRoiIndex && typeof sandbox.SetRoiIndex === "function") {
+      try {
+        const callbackArg =
+          vn.invokeCallbackArg !== undefined ? vn.invokeCallbackArg : false;
+        const result = sandbox.SetRoiIndex(callbackArg);
+        callbackResults.push({
+          name: "SetRoiIndex",
+          arg: callbackArg,
+          result,
+          source: "RunnerDirectCall",
+        });
+        logs.push("[Runner] SetRoiIndex() direct call returned: " + result);
+      } catch (e) {
+        logs.push("[Runner] SetRoiIndex() direct call error: " + e.message);
+      }
+    }
   } catch (e) {
     error = {
       message: e.message,
@@ -169,6 +202,7 @@ function main() {
     input,
     logs,
     outputs,
+    callbackResults,
     error,
     globalStringStore: globalStringData,
     globalNumericStore: globalNumericData,

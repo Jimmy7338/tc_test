@@ -72,6 +72,14 @@ VNLib.Log(msg);
 
 Do not send each diagnostic value with `VNLib.SendOutput()`. If external diagnostic output is required, aggregate into one output line/string.
 
+When debugging ROI/order complaints, include these fields in one log block:
+
+- task/job identifier;
+- input `code`, `center`, `ROI_number`;
+- resolved ROI mode and target ROI index;
+- filtered count vs original count;
+- final chosen main code category and output branch.
+
 ## ROI Empty-Match Pattern
 
 Current policy:
@@ -89,6 +97,11 @@ if (roiFiltered.roiModeValid && roiFiltered.originalHadCodes && roiFiltered.noTa
 ```
 
 Adapt field values to the script's actual `DisposalMark` requirement.
+
+Field note:
+
+- Temporary bypass of ROI equality checks is useful for debugging but must be clearly marked and reverted for production scripts.
+- If bypass is enabled, multi-1Z collisions and `!!!!` output become expected side effects, not independent defects.
 
 ## JSON API Pattern
 
@@ -142,4 +155,33 @@ Validation:
 
 Risks:
 [ROI numbering / history / output format / optional variables]
+```
+
+## Investigation Report Template (for customer support)
+
+Use this structure when returning a diagnosis before code delivery:
+
+```text
+Problem statement:
+[customer expected behavior] vs [actual behavior]
+
+Evidence:
+- Fault task/job ID: [...]
+- Last correct task/job ID: [...]
+- Key log markers: [Camera.PostScan / ROI filter / classification / angle]
+
+First abnormal point:
+[single branch decision that first diverges]
+
+Root cause:
+[configuration / ROI geometry / script logic / mixed]
+
+Immediate action:
+1. [setting change first]
+2. [script update only if required]
+
+Retest:
+1. Trigger same test condition.
+2. Verify next task/job ID output.
+3. Confirm [specific expected code/order/skew/ROI behavior].
 ```
