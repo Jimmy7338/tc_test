@@ -109,7 +109,7 @@ if (useTimeInMetadata || useAngleInMetadata || useDeviceInMetadata || useBoxPass
         metadataParts.push(`Metadata.boxlength=${ParcelEdgeLengthValue}`);
     }
     if (metadataParts.length > 0) {
-        metadata = metadataParts.join('  '); // Use two spaces as separator
+        metadata = metadataParts.join(';'); // Use semicolon as separator
     }
 }
 function convertToISO8601Zulu(timeValue) {
@@ -248,7 +248,13 @@ function filterCodesByRoi(codeStr, centerStr, roiNumberStr) {
 function parseMaxicode(maxicodeData) {
     if (!maxicodeData || maxicodeData === "") return "";
     let cleanData = maxicodeData;
-    logDebug("Maxicode data (original): " + cleanData);
+    cleanData = cleanData.replace(/\u241D/g, String.fromCharCode(0x1D)); // GS (Group Separator)
+    cleanData = cleanData.replace(/\u241E/g, String.fromCharCode(0x1E)); // RS (Record Separator)
+    cleanData = cleanData.replace(/\u240D/g, String.fromCharCode(0x0D)); // CR (Carriage Return)
+    cleanData = cleanData.replace(/\u241C/g, String.fromCharCode(0x1C)); // FS (File Separator)
+    cleanData = cleanData.replace(/\u2404/g, String.fromCharCode(0x04)); // EOT (End of Transmission)
+    cleanData = cleanData.replace(/\u240A/g, String.fromCharCode(0x0A)); // LF (Line Feed)
+    logDebug("Maxicode data parsed to true ASCII");
     return cleanData;
 }
 function getDisposalMark(oneZCodes, specialOneDCodes, maxiCodes, postalCodes) {
@@ -299,7 +305,7 @@ function buildCompensationMetadata(baseMetadata) {
         "Metadata.Camera.Status=????",
         "Metadata.Box=????",
         "Metadata.boxlength=????"
-    ].join('  ');
+    ].join(';');
 }
 function buildMissedTriggerCompensationOutput(lastPostScanLine) {
     let missNum = 0;
@@ -1337,7 +1343,7 @@ function getParcelAngle() {
         logDebug("1. Forward Vertex (Movement Direction): X="+forwardVertex.x+", Y="+forwardVertex.y + endStr);
         logDebug("2. Rightmost Vertex (Physical Right Side, Excluded Forward): X="+rightmostVertex.x+", Y="+rightmostVertex.y + endStr);
         const parcelSkewAngle = calcSkewAngle(forwardVertex, rightmostVertex, direction);
-        const finalResult = parcelSkewAngle + "°";
+        const finalResult = parcelSkewAngle.toFixed(2);
         logDebug("\n===== Final Parcel Skew Angle Result (Valid & Precise) =====" + endStr);
         logDebug("Target Edge: Forward Vertex -> Physical Right Vertex" + endStr);
         logDebug("Reference Edge: Perpendicular to Conveyor Movement Direction" + endStr);
@@ -1419,7 +1425,7 @@ function getParcelEdgeLength() {
         logDebug("Selected edge: Point A (x=" + a.x.toFixed(2) + ", y=" + a.y.toFixed(2) + ") → Point B (x=" + b.x.toFixed(2) + ", y=" + b.y.toFixed(2) + ")" + endStr);
         logDebug("Edge length: " + edgeLength.toFixed(2) + " pixels" + endStr);
         logDebug("Logic used: " + (useDirectionBasedLogic ? "Direction-based" : "Default (most horizontal)") + endStr);
-        return edgeLength;
+        return edgeLength.toFixed(2);
     } catch (error) {
         logDebug("[Fatal Error] Parcel edge length calculation failed: " + error.message + endStr);
         logDebug("Error stack trace: " + (error.stack || "No stack information") + endStr);
@@ -1430,5 +1436,4 @@ try {
     processCodes();
 } catch (error) {
     logDebug("Processing error: " + error.message);
-}
-VNLib.Log("LastTaskOutputToAssistant: " + (lastTaskForwardedOutput || "<empty>") + endStr);
+}VNLib.Log("LastTaskOutputToAssistant: " + (lastTaskForwardedOutput || "<empty>") + endStr);
